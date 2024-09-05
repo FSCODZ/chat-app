@@ -7,12 +7,14 @@ const Login = () => {
     const [username, setUsername] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
+    const [success, setSuccess] = useState(false); // Ny state för lyckad inloggning
     const { login } = useContext(AuthContext);
     const navigate = useNavigate();
 
     const handleSubmit = async (e) => {
         e.preventDefault();
         setError('');
+        setSuccess(false); // Återställ meddelande vid ny inloggningsförsök
 
         try {
             const csrfResponse = await axios.patch('https://chatify-api.up.railway.app/csrf');
@@ -29,34 +31,32 @@ const Login = () => {
                 }
             });
 
-            console.log('Login Response:', response.data);
-
             const { token } = response.data;
             if (!token) {
-                console.error('Token is missing from response.');
                 setError('Token is missing from response.');
                 return;
             }
 
             const decodedJwt = JSON.parse(atob(token.split('.')[1]));
-            console.log('Decoded JWT:', decodedJwt);
-
             const { id, user: responseUsername, avatar } = decodedJwt;
 
             login({ token, id, username: responseUsername, avatar, csrfToken });
 
-            localStorage.setItem('token', token);
-            localStorage.setItem('id', id);
-            localStorage.setItem('username', responseUsername);
-            localStorage.setItem('avatar', avatar);
-            localStorage.setItem('csrfToken', csrfToken);
+            sessionStorage.setItem('token', token);
+            sessionStorage.setItem('id', id);
+            sessionStorage.setItem('username', responseUsername);
+            sessionStorage.setItem('avatar', avatar);
+            sessionStorage.setItem('csrfToken', csrfToken);
+            sessionStorage.setItem('tokenTimestamp', Date.now());
 
-            localStorage.setItem('tokenTimestamp', Date.now());
+            setSuccess(true); // Visa att inloggningen lyckades
 
-            navigate('/chat');
+            // Omdirigera efter 2 sekunder
+            setTimeout(() => {
+                navigate('/chat');
+            }, 2000);
 
         } catch (error) {
-            console.error('Login Error:', error.response?.data?.message || error.message);
             setError(error.response?.data?.message || 'Invalid credentials');
         }
     };
@@ -95,7 +95,6 @@ const Login = () => {
                             <label htmlFor="password" className="block text-sm font-medium leading-6 text-gray-900">
                                 Password
                             </label>
-                            
                         </div>
                         <div className="mt-2">
                             <input
@@ -112,6 +111,7 @@ const Login = () => {
                     </div>
 
                     {error && <p className="text-sm text-red-500">{error}</p>}
+                    {success && <p className="text-sm text-green-500">Login Sucess! directing...</p>}
 
                     <div>
                         <button

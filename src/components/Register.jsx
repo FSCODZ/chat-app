@@ -6,7 +6,7 @@ const Register = () => {
     const [username, setUsername] = useState('');
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
-    const [avatar, setAvatar] = useState(''); // Lägg till state för avatar
+    const [avatar, setAvatar] = useState(''); 
     const [error, setError] = useState('');
     const [success, setSuccess] = useState('');
     const navigate = useNavigate();
@@ -17,16 +17,14 @@ const Register = () => {
         setSuccess('');
 
         try {
-            // Hämta CSRF-token
             const csrfResponse = await axios.patch('https://chatify-api.up.railway.app/csrf');
             const csrfToken = csrfResponse.data.csrfToken;
 
-            // Skicka registreringsbegäran
             const response = await axios.post('https://chatify-api.up.railway.app/auth/register', {
                 username,
                 email,
                 password,
-                avatar // Skicka avatar-URL
+                avatar 
             }, {
                 headers: {
                     'X-CSRF-Token': csrfToken

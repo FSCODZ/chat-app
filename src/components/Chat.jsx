@@ -10,7 +10,6 @@ const Chat = () => {
   const userId = parseInt(sessionStorage.getItem("id"));
   const endOfMessagesRef = useRef(null);
 
-  // Fake chat-meddelanden
   const [fakeChat] = useState([
     {
       text: "Tja tja, hur mår du?",
@@ -45,7 +44,6 @@ const Chat = () => {
 
     setLoading(true);
 
-    // Hämta bara meddelanden från API:et
     fetch("https://chatify-api.up.railway.app/messages", {
       method: "GET",
       headers: {
@@ -56,7 +54,7 @@ const Chat = () => {
       .then((res) => res.json())
       .then((data) => {
         console.log("Fetched messages:", data);
-        setMessages(data); // Bara API-meddelanden, ingen fakeChat
+        setMessages(data); 
         setLoading(false);
       })
       .catch((err) => {
@@ -112,7 +110,6 @@ const Chat = () => {
       const data = await response.json();
       console.log("Message sent:", data);
 
-      // Ersätt temporärt meddelande med API-svar
       setMessages((prevMessages) =>
         prevMessages.map((msg) =>
           msg.id === tempId ? data.latestMessage : msg
@@ -153,7 +150,7 @@ const Chat = () => {
       <div style={chatContainerStyle}>
         <h2 style={welcomeTextStyle}>Welcome {username || "Guest"}!</h2>
         <div style={chatMessagesStyle}>
-          {/* Visa först fakeChat meddelanden */}
+         
           {fakeChat.map((msg, index) => (
             <div key={index} style={messageStyle}>
               <img src={msg.avatar} alt="Avatar" style={avatarStyle} />
@@ -163,11 +160,10 @@ const Chat = () => {
             </div>
           ))}
 
-          {/* Sedan de riktiga API-meddelandena */}
           {messages.map((msg) => (
             <div
               key={msg.id}
-              style={userMessageStyle} // Visa alla API-meddelanden på höger sida
+              style={userMessageStyle} 
             >
               <img
                 src={msg.avatar || avatar}
@@ -206,7 +202,6 @@ const Chat = () => {
   );
 };
 
-// Stilar som definierats tidigare
 const chatWrapperStyle = {
   display: "flex",
   justifyContent: "center",

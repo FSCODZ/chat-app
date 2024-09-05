@@ -14,11 +14,11 @@ export const AuthProvider = ({ children }) => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const id = localStorage.getItem("id");
-    const username = localStorage.getItem("username");
-    const avatar = localStorage.getItem("avatar");
-    const csrfToken = localStorage.getItem("csrfToken");
+    const token = sessionStorage.getItem("token");
+    const id = sessionStorage.getItem("id");
+    const username = sessionStorage.getItem("username");
+    const avatar = sessionStorage.getItem("avatar");
+    const csrfToken = sessionStorage.getItem("csrfToken");
 
     if (token) {
       setAuthState({ token, id, username, avatar, csrfToken });
@@ -38,7 +38,7 @@ export const AuthProvider = ({ children }) => {
       avatar: null,
       csrfToken: null,
     });
-    localStorage.clear();
+    sessionStorage.clear();
     navigate("/login");
   };
 

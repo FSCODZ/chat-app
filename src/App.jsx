@@ -42,7 +42,7 @@ const App = () => {
 
 const ProtectedRoute = () => {
   const { authState } = useContext(AuthContext);
-  const jwt = authState.token ? authState.token : localStorage.getItem("token");
+  const jwt = authState.token ? authState.token : sessionStorage.getItem("token");
 
   return jwt ? <Outlet /> : <Navigate to="/login" />;
 };
